@@ -1,15 +1,23 @@
 import React, { useState, useSyncExternalStore } from "react";
-import petsData from "../petsData";
 import PetItem from "./PetItem";
 import Modal from "./Modal";
+import { getAllPets } from "../API/pets";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const PetList = () => {
   const [query, setQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  const petList = petsData
-    .filter((pet) => pet.name.toLowerCase().includes(query.toLowerCase()))
+  const { data, isFetching, isSuccess, refetch } = useQuery({
+    queryKey: ["PetDetails"],
+    queryFn: getAllPets,
+    enabled: false,
+  });
+
+  const petList = data
+    ?.filter((pet) => pet.name.toLowerCase().includes(query.toLowerCase()))
     .map((pet) => <PetItem pet={pet} key={pet.id} />);
+
   return (
     <>
       <div className="bg-[#F9E3BE] flex flex-col justify-center items-center ">
@@ -21,6 +29,12 @@ const PetList = () => {
             placeholder="Search"
             className="w-[70%] flex justify-start items-center border border-black rounded-md"
           />
+          <button
+            className="ml-auto w-[25%] px-3 py-2 rounded-md text-sm md:text-xl border border-black  flex justify-center items-center bg-green-400 hover:bg-green-600"
+            onClick={refetch}
+          >
+            All Pets
+          </button>
           <button
             className="ml-auto w-[25%] px-3 py-2 rounded-md text-sm md:text-xl border border-black  flex justify-center items-center bg-green-400 hover:bg-green-600"
             onClick={() => {
