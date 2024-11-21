@@ -4,10 +4,9 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { deletePet } from "../API/pets";
 
 
-const PetDetail = () => {
-  const petId = 352;
+const PetDetail = ({petId}) => {
   const { data, isFetching, isSuccess } = useQuery({
-    queryKey: ["Pets"],
+    queryKey: ["Pets", petId],
     queryFn: () => getPetById(petId),
   });
   const mutation = useMutation({
@@ -16,9 +15,7 @@ const PetDetail = () => {
   });
 
   const handleDelete = () => {
-    if (data) {
-      mutation.mutate(data.id); 
-    }
+      mutation.mutate(petId); 
   }; 
 
   return (
